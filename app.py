@@ -127,7 +127,7 @@ def userCar():
         'matricula': matricula,
         'modelo': modelo,
         'año': año,
-        'user_id': id_user
+        'user_id': ObjectId(id_user)
     }) 
     if result.acknowledged:
         return jsonify({
@@ -137,6 +137,36 @@ def userCar():
         return jsonify({
             "msj": "Error al crear el coche"
         }), 400
+    
+#endpoint buscar coches usuario
+@app.route('/searchCars', methods=['GET'])
+@jwt_required()
+def searchCars():
+    id_user = get_jwt_identity()
+    id_user = ObjectId(id_user)
+
+    cars_cursor = mongo.db.cars.find({ #cars_cursor almacena la consulta
+        'user_id': id_user
+    })
+    cars_list = [] #crear lista
+
+    for car in cars_cursor: #recorre cada elemento de cars_cursor
+        #ira convirtiendo car por car su _id y el user_id a cadena
+        car['_id'] = str(car['_id'])
+        car['user_id'] = str(car['user_id'])
+        #para finalmente añadirse a la lista cars_list
+        cars_list.append(car)
+
+    if cars_list:
+        return jsonify({
+            "msj": "Coches encontrados",
+            "coches": cars_list
+        }), 200
+    else:
+        return jsonify({
+            "msj": "No hay coches para este usuario"
+        }), 404
+
 
 # El argumento debug=True inicia el servidor web de desarrollo de Flask con el modo de 
 # depuración activado, lo que permite ver errores detallados y reiniciar automáticamente
