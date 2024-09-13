@@ -111,6 +111,26 @@ def userIdData():
         return jsonify({
             "msj": "Usuario no encontrado"
         }), 404
+    
+# endpoint crear coches por usuario
+@app.route('/userCar', methods=['POST'])
+@jwt_required()
+def userCar():
+    car_data = request.get_json()
+
+    userId = get_jwt_identity()
+    userId = ObjectId(userId)
+
+    car_data['_id'] = userId #le asignamos el id del coche al id del usuario adquirido desde el jwt
+
+    result = mongo.db.cars.insert_one(car_data) #inserta los datos que quieras del coche (no lo estableci cuales son)
+
+    if result.acknowledged:
+        return jsonify({
+            "msj": "Coche creado con exito",
+            "coche": car_data,
+            "id_coche": str(result.inserted_id) #inserta el id del result (coche)
+        }), 200
 
 # El argumento debug=True inicia el servidor web de desarrollo de Flask con el modo de 
 # depuración activado, lo que permite ver errores detallados y reiniciar automáticamente
