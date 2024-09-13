@@ -131,6 +131,11 @@ def userCar():
     # Convertir el ID a cadena
     id_coche = str(inserted_id)
 
+    # Convertir todos los ObjectId en car_data a cadena
+    for key in car_data:
+        if isinstance(car_data[key], ObjectId):
+            car_data[key] = str(car_data[key])
+
     if result.acknowledged:
         return jsonify({
             "msj": "Coche creado con exito",
