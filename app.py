@@ -119,22 +119,13 @@ def userCar():
     car_data = request.get_json()
 
     userId = get_jwt_identity()
-    userId = ObjectId(userId)
 
-    car_data['_id'] = userId #le asignamos el id del coche al id del usuario adquirido desde el jwt
+    car_data['userId'] = str(userId) #le asignamos el id del coche al id del usuario adquirido desde el jwt
 
     result = mongo.db.cars.insert_one(car_data) #inserta los datos que quieras del coche (no lo estableci cuales son)
 
-    # Obtener el ID del coche insertado
-    inserted_id = result.inserted_id
-
-    # Convertir el ID a cadena
-    id_coche = str(inserted_id)
-
-    # Convertir todos los ObjectId en car_data a cadena
-    for key in car_data:
-        if isinstance(car_data[key], ObjectId):
-            car_data[key] = str(car_data[key])
+    inserted_id = result.inserted_id # Obtener el ID del coche insertado
+    id_coche = str(inserted_id) # Convertir el ID a cadena
 
     if result.acknowledged:
         return jsonify({
