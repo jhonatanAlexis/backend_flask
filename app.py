@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify #request es de las peticiones y jsonfy para convertir a json
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from model import mongo, init_db
 from config import Config
 from flask_bcrypt import Bcrypt
@@ -78,13 +78,38 @@ def me():
     })
 
     if usuario:
-        usuario["_id"]=str(usuario["_id"]) #convierte el id en cadena de texto
+        usuario["_id"]=str(usuario["_id"]) #convierte el id en cadena de texto para cambiar el id
         return jsonify({
             "usuario:": usuario
         }), 200
     else:
         return jsonify({
             "msg": "Usuario no encontrado"
+        }), 404
+
+# Endpoint para buscar usuario por el id del token
+@app.route('/userIdData', methods=['GET'])
+@jwt_required() 
+def userIdData():
+    userId = get_jwt_identity() #busca el identificador unico (id) desde el jwt
+
+    userId = ObjectId(userId) #convertimos el user a objeto para poder hacer la busqueda (estaba en str)
+
+    user = mongo.db.users.find_one({
+        '_id': userId
+    },{
+        'password': 0
+    })
+
+    if user:
+        user['_id'] = str(user['_id']) 
+        return jsonify({
+            "msj": "Usuario encontrado",
+            "usuario": user
+        }), 200
+    else:
+        return jsonify({
+            "msj": "Usuario no encontrado"
         }), 404
 
 # El argumento debug=True inicia el servidor web de desarrollo de Flask con el modo de 
