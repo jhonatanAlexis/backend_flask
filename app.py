@@ -125,11 +125,17 @@ def userCar():
 
     result = mongo.db.cars.insert_one(car_data) #inserta los datos que quieras del coche (no lo estableci cuales son)
 
+    # Obtener el ID del coche insertado
+    inserted_id = result.inserted_id
+
+    # Convertir el ID a cadena
+    id_coche = str(inserted_id)
+
     if result.acknowledged:
         return jsonify({
             "msj": "Coche creado con exito",
             "coche": car_data,
-            "id_coche": str(result.inserted_id) #inserta el id del result (coche)
+            "id_coche": id_coche
         }), 200
     else:
         return jsonify({
