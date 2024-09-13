@@ -131,6 +131,10 @@ def userCar():
             "coche": car_data,
             "id_coche": str(result.inserted_id) #inserta el id del result (coche)
         }), 200
+    else:
+        return jsonify({
+            "msj": "Error al crear el coche"
+        }), 400
 
 # El argumento debug=True inicia el servidor web de desarrollo de Flask con el modo de 
 # depuración activado, lo que permite ver errores detallados y reiniciar automáticamente
