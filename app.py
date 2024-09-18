@@ -78,7 +78,7 @@ def me():
     })
 
     if usuario:
-        usuario["_id"]=str(usuario["_id"]) #convierte el id en cadena de texto para cambiar el id
+        usuario["_id"]=str(usuario["_id"]) #convierte el id en cadena de texto para poder mandarlo en formato json 
         return jsonify({
             "usuario:": usuario
         }), 200
