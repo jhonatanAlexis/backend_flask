@@ -30,7 +30,7 @@ def register():
             "msg": "Ese usuario ya existe"
         }), 400
     
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') #hace hash a la contraseña
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8') #  hace hash a la contraseña
 
     #crea un nuevo usuario en la base de datos (mongo.db.users.insert_one devueve un objeto con 2 propiedades, "acknowledge" que es si se guardo correctamente y el id del documento insertado)
     result = mongo.db.users.insert_one({
@@ -57,7 +57,7 @@ def login():
         'email': email
     })
     #verifica si el usuario existe y la contraseña es correcta, crea un token jwt
-    if user and bcrypt.check_password_hash(user['password'], password): #user['password'] es la contraseña almacenada en la base de datos y password es la que recupero
+    if user and bcrypt.check_password_hash(user['password'], password): #user['password'] es la contraseña almacenada en la base de datos y password es la que recuperó
         access_token = create_access_token(identity=str(user["_id"])) #identity le dice al sistema qué dato único del usuario usar como identificador o sea el _id que da mongo y este lo convertimos en cadena por convenciencia
         return jsonify(access_token = access_token), 200 #devuelve el token
     else:
