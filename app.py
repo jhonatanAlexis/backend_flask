@@ -93,7 +93,7 @@ def me():
 def userIdData():
     userId = get_jwt_identity() #busca el identificador unico (id) desde el jwt
 
-    userId = ObjectId(userId) #convertimos el user a objeto para poder hacer la busqueda (estaba en str)
+    userId = ObjectId(userId) #convertimos el user a objeto para poder hacer la busqueda
 
     user = mongo.db.users.find_one({
         '_id': userId
